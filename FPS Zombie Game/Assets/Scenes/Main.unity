@@ -523,6 +523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 963194225}
+  anim: {fileID: 1069942741}
   speed: 0.1
   xSensitivity: 2
   ySensitivity: 2

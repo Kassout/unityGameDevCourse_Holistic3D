@@ -7,6 +7,7 @@ using UnityEngine;
 public class FPController : MonoBehaviour
 {
     public GameObject cam;
+    public Animator anim;
 
     [SerializeField] private float speed = 0.1f;
     [SerializeField] private float xSensitivity = 2f;
@@ -34,7 +35,18 @@ public class FPController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            anim.SetBool("arm", !anim.GetBool("arm"));
+        }
         
+        if (Input.GetMouseButtonDown(0))
+        {
+            anim.SetBool("fire", true);
+        } else if (Input.GetMouseButtonUp(0))
+        {
+            anim.SetBool("fire", false);
+        }
     }
 
     private void FixedUpdate()
