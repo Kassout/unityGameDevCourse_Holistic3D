@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class FPController : MonoBehaviour
@@ -17,7 +18,8 @@ public class FPController : MonoBehaviour
     private CapsuleCollider capsule;
     private Quaternion cameraRotation;
     private Quaternion characterRotation;
-    
+    private bool cursorIsLocked = true;
+    private bool lockCursor = true;
     
     // Start is called before the first frame update
     void Start()
@@ -56,25 +58,17 @@ public class FPController : MonoBehaviour
         }
         
         // Moving the character by catching horizontal and vertical inputs
-        var x = Input.GetAxis("Horizontal");
-        var z = Input.GetAxis("Vertical");
+        var x = Input.GetAxis("Horizontal") * speed;
+        var z = Input.GetAxis("Vertical") * speed;
 
         // Change the transform to move the character
         // Camera forward-facing movement
         transform.position += cam.transform.forward * z + cam.transform.right * x; //new Vector3(x, 0, z) * speed;
+        
+        // Trigger the cursor locking feature
+        UpdateCursorLock();
     }
-
-    private bool IsGrounded()
-    {
-        RaycastHit hitInfo;
-        if (Physics.SphereCast(transform.position, capsule.radius, Vector3.down, out hitInfo, (capsule.height / 2f) - capsule.radius + 0.1f))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
+    
     private Quaternion ClampRotationAroundXAxis(Quaternion q)
     {
         // Normalize our current quaternion
@@ -91,5 +85,55 @@ public class FPController : MonoBehaviour
         q.x = Mathf.Tan(0.5f * Mathf.Deg2Rad * angleX);
 
         return q;
+    }
+
+    private bool IsGrounded()
+    {
+        RaycastHit hitInfo;
+        if (Physics.SphereCast(transform.position, capsule.radius, Vector3.down, out hitInfo, (capsule.height / 2f) - capsule.radius + 0.1f))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void SetCursorLock(bool value)
+    {
+        lockCursor = value;
+        if (!lockCursor)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+
+    public void UpdateCursorLock()
+    {
+        if (lockCursor)
+        {
+            InternalLockUpdate();
+        }
+    }
+
+    public void InternalLockUpdate()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            cursorIsLocked = false;
+        } else if (Input.GetMouseButtonUp(0))
+        {
+            cursorIsLocked = true;
+        }
+        
+        if (cursorIsLocked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        } else if (!cursorIsLocked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }
