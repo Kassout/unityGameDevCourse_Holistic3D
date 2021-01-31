@@ -42,10 +42,12 @@ public class FPController : MonoBehaviour
         
         if (Input.GetMouseButtonDown(0))
         {
-            anim.SetBool("fire", true);
-        } else if (Input.GetMouseButtonUp(0))
+            anim.SetTrigger("fire");
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            anim.SetBool("fire", false);
+            anim.SetTrigger("reload");
         }
     }
 
