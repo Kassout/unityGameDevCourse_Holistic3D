@@ -1,0 +1,116 @@
+fileFormatVersion: 2
+guid: 18f252caa7bbc3049be771d113bcd564
+timeCreated: 1454836600
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Helper_BackWheelLPosition
+    100002: Helper_BackWheelRPosition
+    100004: Helper_DoorLPivot
+    100006: Helper_DoorRPivot
+    100008: Helper_FrontWheelCover
+    100010: Helper_FrontWheelPostion
+    100012: Helper_MainBody
+    100014: Vehicle02_BodyMesh
+    100016: Vehicle02_DoorLMesh
+    100018: Vehicle02_DoorRMesh
+    100020: Vehicle02_FrontWheelCoverMesh
+    100022: Vehicle02_Piaggio
+    100024: //RootNode
+    100026: Vehicle02_WheelMesh
+    100028: Helper_FrontWheelSteering
+    400000: Helper_BackWheelLPosition
+    400002: Helper_BackWheelRPosition
+    400004: Helper_DoorLPivot
+    400006: Helper_DoorRPivot
+    400008: Helper_FrontWheelCover
+    400010: Helper_FrontWheelPostion
+    400012: Helper_MainBody
+    400014: Vehicle02_BodyMesh
+    400016: Vehicle02_DoorLMesh
+    400018: Vehicle02_DoorRMesh
+    400020: Vehicle02_FrontWheelCoverMesh
+    400022: //RootNode
+    400024: Vehicle02_Piaggio
+    400026: Vehicle02_WheelMesh
+    400028: Helper_FrontWheelSteering
+    2300000: Vehicle02_BodyMesh
+    2300002: Vehicle02_DoorLMesh
+    2300004: Vehicle02_DoorRMesh
+    2300006: Vehicle02_FrontWheelCoverMesh
+    2300008: Vehicle02_WheelMesh
+    3300000: Vehicle02_BodyMesh
+    3300002: Vehicle02_DoorLMesh
+    3300004: Vehicle02_DoorRMesh
+    3300006: Vehicle02_FrontWheelCoverMesh
+    3300008: Vehicle02_WheelMesh
+    4300000: Vehicle02_BodyMesh
+    4300002: Vehicle02_DoorRMesh
+    4300004: Vehicle02_DoorLMesh
+    4300006: Vehicle02_FrontWheelCoverMesh
+    4300008: Vehicle02_WheelMesh
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

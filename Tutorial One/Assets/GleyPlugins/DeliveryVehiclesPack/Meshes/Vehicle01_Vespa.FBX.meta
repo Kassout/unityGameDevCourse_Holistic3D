@@ -1,0 +1,122 @@
+fileFormatVersion: 2
+guid: 434536a17f4ec8241aec5bbe0613aed8
+timeCreated: 1454837069
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Helper_BackWheelPosition
+    100002: Helper_FrontWheelPosition
+    100004: Helper_Jack
+    100006: Helper_MainBody
+    100008: Helper_PizzaBox
+    100010: Helper_Steering
+    100012: Vehicle01_BodyMesh
+    100014: Vehicle01_FrontWheelCoverMesh
+    100016: Vehicle01_HandleBarMesh
+    100018: Vehicle01_JackMesh
+    100020: Vehicle01_PizzaBoxMesh
+    100022: Vehicle01_Vespa
+    100024: //RootNode
+    100026: Vehicle01_WheelMesh
+    100028: Vehicle01_PizzaBoxMeshA
+    400000: Helper_BackWheelPosition
+    400002: Helper_FrontWheelPosition
+    400004: Helper_Jack
+    400006: Helper_MainBody
+    400008: Helper_PizzaBox
+    400010: Helper_Steering
+    400012: Vehicle01_BodyMesh
+    400014: Vehicle01_FrontWheelCoverMesh
+    400016: Vehicle01_HandleBarMesh
+    400018: Vehicle01_JackMesh
+    400020: Vehicle01_PizzaBoxMesh
+    400022: Vehicle01_Vespa
+    400024: //RootNode
+    400026: Vehicle01_WheelMesh
+    400028: Vehicle01_PizzaBoxMeshA
+    2300000: Vehicle01_BodyMesh
+    2300002: Vehicle01_FrontWheelCoverMesh
+    2300004: Vehicle01_HandleBarMesh
+    2300006: Vehicle01_JackMesh
+    2300008: Vehicle01_PizzaBoxMesh
+    2300010: Vehicle01_WheelMesh
+    2300012: Vehicle01_PizzaBoxMeshA
+    3300000: Vehicle01_BodyMesh
+    3300002: Vehicle01_FrontWheelCoverMesh
+    3300004: Vehicle01_HandleBarMesh
+    3300006: Vehicle01_JackMesh
+    3300008: Vehicle01_PizzaBoxMesh
+    3300010: Vehicle01_WheelMesh
+    3300012: Vehicle01_PizzaBoxMeshA
+    4300000: Vehicle01_BodyMesh
+    4300002: Vehicle01_JackMesh
+    4300004: Vehicle01_PizzaBoxMesh
+    4300006: Vehicle01_HandleBarMesh
+    4300008: Vehicle01_FrontWheelCoverMesh
+    4300010: Vehicle01_WheelMesh
+    4300012: Vehicle01_PizzaBoxMeshA
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
