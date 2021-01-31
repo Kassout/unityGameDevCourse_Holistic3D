@@ -21,6 +21,9 @@ public class FPController : MonoBehaviour
     private Quaternion characterRotation;
     private bool cursorIsLocked = true;
     private bool lockCursor = true;
+
+    private float x;
+    private float z;
     
     // Start is called before the first frame update
     void Start()
@@ -49,6 +52,18 @@ public class FPController : MonoBehaviour
         {
             anim.SetTrigger("reload");
         }
+
+        if (Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0)
+        {
+            if (!anim.GetBool("walk"))
+            {
+                anim.SetBool("walk", true);
+            }
+        }
+        else if (anim.GetBool("walk"))
+        {
+            anim.SetBool("walk", false);
+        }
     }
 
     private void FixedUpdate()
@@ -72,8 +87,8 @@ public class FPController : MonoBehaviour
         }
         
         // Moving the character by catching horizontal and vertical inputs
-        var x = Input.GetAxis("Horizontal") * speed;
-        var z = Input.GetAxis("Vertical") * speed;
+        x = Input.GetAxis("Horizontal") * speed;
+        z = Input.GetAxis("Vertical") * speed;
 
         // Change the transform to move the character
         // Camera forward-facing movement
