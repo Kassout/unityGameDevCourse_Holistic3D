@@ -8,6 +8,7 @@ public class FPController : MonoBehaviour
 {
     public GameObject cam;
     public Animator anim;
+    //public AudioSource shot;
 
     [SerializeField] private float speed = 0.1f;
     [SerializeField] private float xSensitivity = 2f;
@@ -46,6 +47,8 @@ public class FPController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             anim.SetTrigger("fire");
+            //shot.Play();
+            
         }
 
         if (Input.GetKeyDown(KeyCode.R))
