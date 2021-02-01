@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.VersionControl;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class FPController : MonoBehaviour
 {
     public GameObject cam;
     public Animator anim;
-    //public AudioSource shot;
+    public AudioSource[] footSteps;
+    public AudioSource jump;
+    public AudioSource land;
 
     [SerializeField] private float speed = 0.1f;
     [SerializeField] private float xSensitivity = 2f;
@@ -47,8 +47,6 @@ public class FPController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             anim.SetTrigger("fire");
-            //shot.Play();
-            
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -61,14 +59,38 @@ public class FPController : MonoBehaviour
             if (!anim.GetBool("walk"))
             {
                 anim.SetBool("walk", true);
+                InvokeRepeating("PlayFootStepAudio", 0, 0.4f);
             }
         }
         else if (anim.GetBool("walk"))
         {
             anim.SetBool("walk", false);
+            CancelInvoke("PlayFootStepAudio");
+        }
+        
+        // GetKeyDown if you don't want the process to repeat until the player is pressing the key again
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        {
+            rb.AddForce(0, 300, 0);
+            jump.Play();
+            if (anim.GetBool("walk"))
+            {
+                CancelInvoke("PlayFootStepAudio");
+            }
         }
     }
 
+    void PlayFootStepAudio()
+    {
+        AudioSource audioSource = new AudioSource();
+        int n = Random.Range(1, footSteps.Length);
+
+        audioSource = footSteps[n];
+        audioSource.Play();
+        footSteps[n] = footSteps[0];
+        footSteps[0] = audioSource;
+    }
+    
     private void FixedUpdate()
     {
         // Rotating the character and the camera around X and Y axis
@@ -82,13 +104,7 @@ public class FPController : MonoBehaviour
 
         transform.localRotation = characterRotation;
         cam.transform.localRotation = cameraRotation;
-        
-        // GetKeyDown if you don't want the process to repeat until the player is pressing the key again
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
-        {
-            rb.AddForce(0, 300, 0);
-        }
-        
+
         // Moving the character by catching horizontal and vertical inputs
         x = Input.GetAxis("Horizontal") * speed;
         z = Input.GetAxis("Vertical") * speed;
@@ -128,6 +144,15 @@ public class FPController : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void OnCollisionEnter(Collision collider)
+    {
+        if (IsGrounded())
+        {
+            land.Play();
+            InvokeRepeating("PlayFootStepAudio", 0, 0.4f);
+        }
     }
 
     public void SetCursorLock(bool value)
