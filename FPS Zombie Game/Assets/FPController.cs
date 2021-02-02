@@ -9,6 +9,11 @@ public class FPController : MonoBehaviour
     public AudioSource[] footSteps;
     public AudioSource jump;
     public AudioSource land;
+    public AudioSource ammoPickup;
+    public AudioSource medKitPickup;
+    public AudioSource triggerSound;
+    public AudioSource deathSound;
+    public AudioSource reloadWeapon;
 
     [SerializeField] private float speed = 0.1f;
     [SerializeField] private float xSensitivity = 2f;
@@ -25,6 +30,22 @@ public class FPController : MonoBehaviour
 
     private float x;
     private float z;
+
+    private bool playingWalking = false;
+    private bool previouslyGrounded = true;
+
+    #region Inventory
+
+    private int ammo = 0;
+    private int maxAmmo = 50;
+
+    private int ammoClip = 0;
+    private int ammoClipMax = 10;
+    
+    private int health = 0;
+    private int maxHealth = 100;
+
+    #endregion
     
     // Start is called before the first frame update
     void Start()
@@ -34,6 +55,8 @@ public class FPController : MonoBehaviour
 
         cameraRotation = cam.transform.localRotation;
         characterRotation = transform.localRotation;
+
+        health = maxHealth;
     }
 
     // Update is called once per frame
@@ -44,14 +67,31 @@ public class FPController : MonoBehaviour
             anim.SetBool("arm", !anim.GetBool("arm"));
         }
         
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !anim.GetBool("fire")) 
         {
-            anim.SetTrigger("fire");
+            if (ammoClip > 0)
+            {
+                anim.SetTrigger("fire");
+                ammoClip--;
+            }
+            else if (anim.GetBool("arm"))
+            {
+                triggerSound.Play();
+            }
+            Debug.Log("Ammo Left in Clip: " + ammoClip);
         }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && anim.GetBool("arm"))
         {
             anim.SetTrigger("reload");
+            reloadWeapon.Play();
+            int amountNeeded = ammoClipMax - ammoClip;
+            int ammoAvailable = amountNeeded < ammo ? amountNeeded : ammo;
+            ammo -= ammoAvailable;
+            ammoClip += ammoAvailable;
+            
+            Debug.Log("Ammo Left: " + ammo);
+            Debug.Log("Ammo in Clip: " + ammoClip);
         }
 
         if (Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0)
@@ -66,18 +106,26 @@ public class FPController : MonoBehaviour
         {
             anim.SetBool("walk", false);
             CancelInvoke("PlayFootStepAudio");
+            playingWalking = false;
         }
-        
+
+        bool grounded = IsGrounded();
         // GetKeyDown if you don't want the process to repeat until the player is pressing the key again
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && grounded)
         {
             rb.AddForce(0, 300, 0);
             jump.Play();
             if (anim.GetBool("walk"))
             {
                 CancelInvoke("PlayFootStepAudio");
+                playingWalking = false;
             }
         }
+        else if (!previouslyGrounded && grounded)
+        {
+            land.Play();
+        }
+        previouslyGrounded = grounded;
     }
 
     void PlayFootStepAudio()
@@ -89,6 +137,8 @@ public class FPController : MonoBehaviour
         audioSource.Play();
         footSteps[n] = footSteps[0];
         footSteps[0] = audioSource;
+
+        playingWalking = true;
     }
     
     private void FixedUpdate()
@@ -146,12 +196,37 @@ public class FPController : MonoBehaviour
         return false;
     }
 
-    private void OnCollisionEnter(Collision collider)
+    private void OnCollisionEnter(Collision other)
     {
-        if (IsGrounded())
+        if (other.gameObject.CompareTag("Ammo") && ammo < maxAmmo)
         {
-            land.Play();
-            InvokeRepeating("PlayFootStepAudio", 0, 0.4f);
+            ammo = Mathf.Clamp(ammo + 10, 0, maxAmmo);
+            Debug.Log("Ammo:" + ammo);
+            Destroy(other.gameObject);
+            ammoPickup.Play();
+        }
+        else if (other.gameObject.CompareTag("MedKit") && health < maxHealth)
+        {
+            health = Mathf.Clamp(health + 25, 0, maxHealth);
+            Debug.Log("MedKit");
+            Destroy(other.gameObject); 
+            medKitPickup.Play();
+        } 
+        else if (other.gameObject.CompareTag("Lava"))
+        {
+            health = Mathf.Clamp(health - 50, 0, maxHealth);
+            Debug.Log("Health level: " + health);
+            if (health <= 0)
+            {
+                deathSound.Play();
+            }
+        }
+        else if (IsGrounded())
+        {
+            if (anim.GetBool("walk") && !playingWalking)
+            {
+                InvokeRepeating("PlayFootStepAudio", 0, 0.4f);   
+            }
         }
     }
 
