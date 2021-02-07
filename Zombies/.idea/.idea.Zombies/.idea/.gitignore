@@ -1,0 +1,13 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/modules.xml
+/projectSettingsUpdater.xml
+/contentModel.xml
+/.idea.Zombies.iml
+# Datasource local storage ignored files
+/../../../../../../../../:\__PROJETS\__GITHUB\unityGameDevCourse_Holistic3D\Zombies\.idea\.idea.Zombies\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
