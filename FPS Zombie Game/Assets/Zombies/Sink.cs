@@ -1,41 +1,37 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class Sink : MonoBehaviour
 {
-    private float destroyHeight;
+    public float delay = 10;
+    float destroyHeight;
 
-    [SerializeField] private float delay = 10.0f;
-
-    private void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-        if (gameObject.CompareTag("Ragdoll"))
-        {
+        if(this.gameObject.tag == "Ragdoll")
             Invoke("StartSink", 5);
-        }
     }
 
     public void StartSink()
     {
-        destroyHeight = Terrain.activeTerrain.SampleHeight(transform.position) - 5;
-        Collider[] colList = transform.GetComponentsInChildren<Collider>();
-        foreach (var col in colList)
+        destroyHeight = Terrain.activeTerrain.SampleHeight(this.transform.position) - 5;
+        Collider[] colList = this.transform.GetComponentsInChildren<Collider>();
+        foreach (Collider c in colList)
         {
-            Destroy(col);
+            Destroy(c);
         }
-        
+
         InvokeRepeating("SinkIntoGround", delay, 0.1f);
     }
 
     void SinkIntoGround()
     {
-        transform.Translate(0, -0.001f, 0);
-        if (transform.position.y < destroyHeight)
+        this.transform.Translate(0, -0.001f, 0);
+        if (this.transform.position.y < destroyHeight)
         {
-            Destroy(gameObject);
+            Destroy(this.gameObject);
         }
     }
 }

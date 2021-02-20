@@ -1,6 +1,8 @@
-﻿using System.Security.Cryptography;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+
 public class ZombieController : MonoBehaviour
 {
     public GameObject target;
@@ -9,26 +11,17 @@ public class ZombieController : MonoBehaviour
     public float runningSpeed;
     public float damageAmount = 5;
     public GameObject ragdoll;
+    Animator anim;
+    NavMeshAgent agent;
 
-    private NavMeshAgent agent;
-    private Animator anim;
-
-    private enum STATE
-    {
-        IDLE,
-        WANDER,
-        ATTACK,
-        CHASE,
-        DEAD
-    };
-
-    private STATE state = STATE.IDLE;
+    enum STATE { IDLE, WANDER, ATTACK, CHASE, DEAD };
+    STATE state = STATE.IDLE;
 
     // Start is called before the first frame update
     void Start()
     {
-        anim = GetComponent<Animator>();
-        agent = GetComponent<NavMeshAgent>();
+        anim = this.GetComponent<Animator>();
+        agent = this.GetComponent<NavMeshAgent>();
     }
 
     void TurnOffTriggers()
@@ -41,33 +34,31 @@ public class ZombieController : MonoBehaviour
 
     float DistanceToPlayer()
     {
-        if (GameStats.gameOver)
-        {
-            return Mathf.Infinity;
-        }
-        return Vector3.Distance(target.transform.position, transform.position);
+        if (GameStats.gameOver) return Mathf.Infinity;
+        return Vector3.Distance(target.transform.position, this.transform.position);
     }
 
     bool CanSeePlayer()
     {
         if (DistanceToPlayer() < 10)
-        {
             return true;
-        }
-
         return false;
     }
 
     bool ForgetPlayer()
     {
         if (DistanceToPlayer() > 20)
-        {
             return true;
-        }
-
         return false;
     }
-    
+
+    public void KillZombie()
+    {
+        TurnOffTriggers();
+        anim.SetBool("isDead", true);
+        state = STATE.DEAD;
+    }
+
     void PlaySplatAudio()
     {
         AudioSource audioSource = new AudioSource();
@@ -79,13 +70,6 @@ public class ZombieController : MonoBehaviour
         splats[0] = audioSource;
     }
 
-    public void KillZombie()
-    {
-        TurnOffTriggers();
-        anim.SetBool("isDead", true);
-        state = STATE.DEAD;
-    }
-
     public void DamagePlayer()
     {
         if (target != null)
@@ -94,6 +78,7 @@ public class ZombieController : MonoBehaviour
             PlaySplatAudio();
         }
     }
+
 
     // Update is called once per frame
     void Update()
@@ -106,35 +91,24 @@ public class ZombieController : MonoBehaviour
         switch (state)
         {
             case STATE.IDLE:
-                if (CanSeePlayer())
-                {
-                    state = STATE.CHASE;
-                } 
-                else if (Random.Range(0, 5000) < 5)
-                {
+                if (CanSeePlayer()) state = STATE.CHASE;
+                else if(Random.Range(0,5000) < 5)
                     state = STATE.WANDER;
-                }
                 break;
-            
             case STATE.WANDER:
                 if (!agent.hasPath)
                 {
-                    float newX = transform.position.x + Random.Range(-5, 5);
-                    float newZ = transform.position.z + Random.Range(-5, 5);
+                    float newX = this.transform.position.x + Random.Range(-5, 5);
+                    float newZ = this.transform.position.z + Random.Range(-5, 5);
                     float newY = Terrain.activeTerrain.SampleHeight(new Vector3(newX, 0, newZ));
                     Vector3 dest = new Vector3(newX, newY, newZ);
                     agent.SetDestination(dest);
                     agent.stoppingDistance = 0;
-                
                     TurnOffTriggers();
                     agent.speed = walkingSpeed;
                     anim.SetBool("isWalking", true);
                 }
-
-                if (CanSeePlayer())
-                {
-                    state = STATE.CHASE;
-                } 
+                if (CanSeePlayer()) state = STATE.CHASE;
                 else if (Random.Range(0, 5000) < 5)
                 {
                     state = STATE.IDLE;
@@ -142,22 +116,14 @@ public class ZombieController : MonoBehaviour
                     agent.ResetPath();
                 }
                 break;
-            
             case STATE.CHASE:
-                if (GameStats.gameOver)
-                {
-                    TurnOffTriggers();
-                    state = STATE.WANDER;
-                    return;
-                }
+                if (GameStats.gameOver) { TurnOffTriggers(); state = STATE.WANDER; return; }
                 agent.SetDestination(target.transform.position);
                 agent.stoppingDistance = 5;
                 TurnOffTriggers();
                 agent.speed = runningSpeed;
                 anim.SetBool("isRunning", true);
-                
-                // SetDestination is process in another thread, it's not instant computed,
-                // so we need to check if the agent is still pending for a state
+
                 if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
                 {
                     state = STATE.ATTACK;
@@ -168,27 +134,23 @@ public class ZombieController : MonoBehaviour
                     state = STATE.WANDER;
                     agent.ResetPath();
                 }
+
                 break;
-            
             case STATE.ATTACK:
-                if (GameStats.gameOver)
-                {
-                    TurnOffTriggers();
-                    state = STATE.WANDER;
-                    return;
-                }
+                if (GameStats.gameOver) { TurnOffTriggers(); state = STATE.WANDER; return; }
                 TurnOffTriggers();
                 anim.SetBool("isAttacking", true);
-                transform.LookAt(target.transform.position);
+                this.transform.LookAt(target.transform.position);
                 if (DistanceToPlayer() > agent.stoppingDistance + 2)
-                {
                     state = STATE.CHASE;
-                }
                 break;
-            
             case STATE.DEAD:
                 Destroy(agent);
-                GetComponent<Sink>().StartSink();
+                AudioSource[] sounds = this.GetComponents<AudioSource>();
+                foreach (AudioSource s in sounds)
+                    s.volume = 0;
+
+                this.GetComponent<Sink>().StartSink();
                 break;
         }
     }

@@ -1,14 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
-using Quaternion = UnityEngine.Quaternion;
-using Random = UnityEngine.Random;
-using Vector3 = UnityEngine.Vector3;
+using UnityEngine.EventSystems;
 
 public class FPController : MonoBehaviour
 {
     public GameObject cam;
     public GameObject stevePrefab;
-    public Slider healthBar;
+    public Slider healthbar;
     public Text ammoReserves;
     public Text ammoClipAmount;
     public Transform shotDirection;
@@ -21,6 +21,13 @@ public class FPController : MonoBehaviour
     public AudioSource triggerSound;
     public AudioSource deathSound;
     public AudioSource reloadSound;
+    public GameObject bloodPrefab;
+
+    public GameObject uiBloodPrefab;
+    public GameObject canvas;
+
+    float cWidth;
+    float cHeight;
 
     float speed = 0.1f;
     float Xsensitivity = 2;
@@ -52,43 +59,59 @@ public class FPController : MonoBehaviour
     public void TakeHit(float amount)
     {
         health = (int) Mathf.Clamp(health - amount, 0, maxHealth);
-        healthBar.value = health;
+        healthbar.value = health;
+
+        GameObject bloodSplatter = Instantiate(uiBloodPrefab);
+        bloodSplatter.transform.SetParent(canvas.transform);
+        bloodSplatter.transform.position = new Vector3(Random.Range(0, cWidth), Random.Range(0, cHeight), 0);
+
+        Destroy(bloodSplatter, 2.2f);
+
         if (health <= 0)
         {
-            Vector3 pos = new Vector3(transform.position.x, Terrain.activeTerrain.SampleHeight(transform.position),
-                transform.position.z);
-            GameObject steve = Instantiate(stevePrefab, pos, transform.rotation);
+            Vector3 pos = new Vector3(this.transform.position.x,
+                                        Terrain.activeTerrain.SampleHeight(this.transform.position),
+                                        this.transform.position.z);
+            GameObject steve = Instantiate(stevePrefab, pos, this.transform.rotation);
             steve.GetComponent<Animator>().SetTrigger("Death");
             GameStats.gameOver = true;
-            Destroy(gameObject);
+            Destroy(this.gameObject);
+
+
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider col)
     {
-        if (other.CompareTag("Home"))
+        if (col.gameObject.tag == "Home")
         {
-            Vector3 pos = new Vector3(transform.position.x, Terrain.activeTerrain.SampleHeight(transform.position),
-                transform.position.z);
-            GameObject steve = Instantiate(stevePrefab, pos, transform.rotation);
+            Vector3 pos = new Vector3(this.transform.position.x,
+                                        Terrain.activeTerrain.SampleHeight(this.transform.position),
+                                        this.transform.position.z);
+            GameObject steve = Instantiate(stevePrefab, pos, this.transform.rotation);
             steve.GetComponent<Animator>().SetTrigger("Dance");
             GameStats.gameOver = true;
-            Destroy(gameObject);
+            Destroy(this.gameObject);
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        capsule = GetComponent<CapsuleCollider>();
+        rb = this.GetComponent<Rigidbody>();
+        capsule = this.GetComponent<CapsuleCollider>();
         cameraRot = cam.transform.localRotation;
-        characterRot = transform.localRotation;
+        characterRot = this.transform.localRotation;
 
         health = maxHealth;
-        healthBar.value = health;
-        ammoReserves.text = ammo.ToString();
-        ammoClipAmount.text = ammoClip.ToString();
+        healthbar.value = health;
+
+        ammoReserves.text = ammo + "";
+        ammoClipAmount.text = ammoClip + "";
+
+        cWidth = canvas.GetComponent<RectTransform>().rect.width;
+        cHeight = canvas.GetComponent<RectTransform>().rect.height;
+
     }
 
     void ProcessZombieHit()
@@ -97,13 +120,17 @@ public class FPController : MonoBehaviour
         if (Physics.Raycast(shotDirection.position, shotDirection.forward, out hitInfo, 200))
         {
             GameObject hitZombie = hitInfo.collider.gameObject;
-            if (hitZombie.CompareTag("Zombie"))
+            if (hitZombie.tag == "Zombie")
             {
+                GameObject blood = Instantiate(bloodPrefab, hitInfo.point, Quaternion.identity);
+                blood.transform.LookAt(this.transform.position);
+                Destroy(blood, 0.5f);
+
                 if (Random.Range(0, 10) < 5)
                 {
-                    GameObject rd = hitZombie.GetComponent<ZombieController>().ragdoll;
-                    GameObject newRd = Instantiate(rd, hitZombie.transform.position, hitZombie.transform.rotation);
-                    newRd.transform.Find("Hips").GetComponent<Rigidbody>().AddForce(shotDirection.forward * 10000);
+                    GameObject rdPrefab = hitZombie.GetComponent<ZombieController>().ragdoll;
+                    GameObject newRD = Instantiate(rdPrefab, hitZombie.transform.position, hitZombie.transform.rotation);
+                    newRD.transform.Find("Hips").GetComponent<Rigidbody>().AddForce(shotDirection.forward * 10000);
                     Destroy(hitZombie);
                 }
                 else
@@ -114,28 +141,30 @@ public class FPController : MonoBehaviour
         }
     }
 
+
     // Update is called once per frame
     void Update()
     {
         Debug.DrawRay(shotDirection.transform.position, shotDirection.forward * 200, Color.red);
         if (Input.GetKeyDown(KeyCode.F))
             anim.SetBool("arm", !anim.GetBool("arm"));
+            
 
-        if (Input.GetMouseButtonDown(0) && !anim.GetBool("fire") && GameStats.canShoot)
+        if (Input.GetMouseButtonDown(0) && !anim.GetBool("fire") && anim.GetBool("arm") && GameStats.canShoot)
         {
             if (ammoClip > 0)
             {
                 anim.SetTrigger("fire");
                 ProcessZombieHit();
                 ammoClip--;
-                ammoClipAmount.text = ammoClip.ToString();
+                ammoClipAmount.text = ammoClip + "";
                 GameStats.canShoot = false;
             }
-            else if (anim.GetBool("arm"))
+            else 
                 triggerSound.Play();
 
 
-            Debug.Log("Ammo Left in Clip: " + ammoClip);
+            //Debug.Log("Ammo Left in Clip: " + ammoClip);
         }
 
         if (Input.GetKeyDown(KeyCode.R) && anim.GetBool("arm"))
@@ -146,8 +175,10 @@ public class FPController : MonoBehaviour
             int ammoAvailable = amountNeeded < ammo ? amountNeeded : ammo;
             ammo -= ammoAvailable;
             ammoClip += ammoAvailable;
-            ammoReserves.text = ammo.ToString();
-            ammoClipAmount.text = ammoClip.ToString();
+            ammoReserves.text = ammo + "";
+            ammoClipAmount.text = ammoClip + "";
+            //Debug.Log("Ammo Left: " + ammo);
+            //Debug.Log("Ammo in Clip: " + ammoClip);
         }
 
         if (Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0)
@@ -208,7 +239,7 @@ public class FPController : MonoBehaviour
 
         cameraRot = ClampRotationAroundXAxis(cameraRot);
 
-        transform.localRotation = characterRot;
+        this.transform.localRotation = characterRot;
         cam.transform.localRotation = cameraRot;
 
         x = Input.GetAxis("Horizontal") * speed;
@@ -249,7 +280,8 @@ public class FPController : MonoBehaviour
         if (col.gameObject.tag == "Ammo" && ammo < maxAmmo)
         {
             ammo = Mathf.Clamp(ammo + 10, 0, maxAmmo);
-            ammoReserves.text = ammo.ToString();
+            ammoReserves.text = ammo + "";
+            //Debug.Log("Ammo: " + ammo);
             Destroy(col.gameObject);
             ammoPickup.Play();
 
@@ -257,14 +289,16 @@ public class FPController : MonoBehaviour
         else if (col.gameObject.tag == "MedKit" && health < maxHealth)
         {
             health = Mathf.Clamp(health + 25, 0, maxHealth);
-            healthBar.value = health;
+            healthbar.value = health;
+            //Debug.Log("MedKit: " + health);
             Destroy(col.gameObject);
             healthPickup.Play();
         }
         else if (col.gameObject.tag == "Lava")
         {
             health = Mathf.Clamp(health - 50, 0, maxHealth);
-            healthBar.value = health;
+            healthbar.value = health;
+            // Debug.Log("Health Level: " + health);
             if (health <= 0)
                 deathSound.Play();
         }
@@ -298,7 +332,7 @@ public class FPController : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Escape))
             cursorIsLocked = false;
-        else if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
             cursorIsLocked = true;
 
         if (cursorIsLocked)

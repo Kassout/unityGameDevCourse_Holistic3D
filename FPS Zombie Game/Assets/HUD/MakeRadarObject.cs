@@ -1,14 +1,16 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class MakeRadarObject : MonoBehaviour
 {
     public Image image;
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        Radar.RegisterRadarObject(gameObject, image);
+        Radar.RegisterRadarObject(this.gameObject, image);
     }
 
     // Update is called once per frame
@@ -17,8 +19,8 @@ public class MakeRadarObject : MonoBehaviour
         
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
-        Radar.RemoveRadarObject(gameObject);
+        Radar.RemoveRadarObject(this.gameObject);
     }
 }
