@@ -1,0 +1,138 @@
+# Exported from Fuse 2017.1.0
+
+newmtl Beard
+illum 4 
+Kd 1.00 1.00 1.00 
+Tf 1.00 1.00 1.00 
+Ni 1.00 
+Ks 1.00 1.00 1.00 
+Ns 512 
+adobe_reflectivity 0.04 
+adobe_bump_strength 0.0 
+d 1.0 
+
+map_d SteveModel_Beard_Opacity.png
+map_Kd SteveModel_Beard_Diffuse.png
+adobe_map_normal SteveModel_Beard_Normal.png
+map_Ks SteveModel_Beard_Specular.png
+adobe_map_shininess SteveModel_Beard_Gloss.png
+
+newmtl Hat
+illum 4 
+Kd 1.00 1.00 1.00 
+Tf 1.00 1.00 1.00 
+Ni 1.00 
+Ks 1.00 1.00 1.00 
+Ns 512 
+adobe_reflectivity 0.04 
+adobe_bump_strength 0.0 
+d 1.0 
+
+map_d SteveModel_Hat_Opacity.png
+map_Kd SteveModel_Hat_Diffuse.png
+adobe_map_normal SteveModel_Hat_Normal.png
+map_Ks SteveModel_Hat_Specular.png
+adobe_map_shininess SteveModel_Hat_Gloss.png
+
+newmtl Top
+illum 4 
+Kd 1.00 1.00 1.00 
+Tf 1.00 1.00 1.00 
+Ni 1.00 
+Ks 1.00 1.00 1.00 
+Ns 512 
+adobe_reflectivity 0.04 
+adobe_bump_strength 0.0 
+d 1.0 
+
+map_d SteveModel_Top_Opacity.png
+map_Kd SteveModel_Top_Diffuse.png
+adobe_map_normal SteveModel_Top_Normal.png
+map_Ks SteveModel_Top_Specular.png
+adobe_map_shininess SteveModel_Top_Gloss.png
+
+newmtl Eyewear
+illum 4 
+Kd 1.00 1.00 1.00 
+Tf 1.00 1.00 1.00 
+Ni 1.00 
+Ks 1.00 1.00 1.00 
+Ns 512 
+adobe_reflectivity 0.04 
+adobe_bump_strength 0.0 
+d 1.0 
+
+map_d SteveModel_Eyewear_Opacity.png
+map_Kd SteveModel_Eyewear_Diffuse.png
+adobe_map_normal SteveModel_Eyewear_Normal.png
+map_Ks SteveModel_Eyewear_Specular.png
+adobe_map_shininess SteveModel_Eyewear_Gloss.png
+
+newmtl Shoes
+illum 4 
+Kd 1.00 1.00 1.00 
+Tf 1.00 1.00 1.00 
+Ni 1.00 
+Ks 1.00 1.00 1.00 
+Ns 512 
+adobe_reflectivity 0.04 
+adobe_bump_strength 0.0 
+d 1.0 
+
+map_d SteveModel_Shoes_Opacity.png
+map_Kd SteveModel_Shoes_Diffuse.png
+adobe_map_normal SteveModel_Shoes_Normal.png
+map_Ks SteveModel_Shoes_Specular.png
+adobe_map_shininess SteveModel_Shoes_Gloss.png
+
+newmtl Bottom
+illum 4 
+Kd 1.00 1.00 1.00 
+Tf 1.00 1.00 1.00 
+Ni 1.00 
+Ks 1.00 1.00 1.00 
+Ns 512 
+adobe_reflectivity 0.04 
+adobe_bump_strength 0.0 
+d 1.0 
+
+map_d SteveModel_Bottom_Opacity.png
+map_Kd SteveModel_Bottom_Diffuse.png
+adobe_map_normal SteveModel_Bottom_Normal.png
+map_Ks SteveModel_Bottom_Specular.png
+adobe_map_shininess SteveModel_Bottom_Gloss.png
+
+newmtl Glove
+illum 4 
+Kd 1.00 1.00 1.00 
+Tf 1.00 1.00 1.00 
+Ni 1.00 
+Ks 1.00 1.00 1.00 
+Ns 512 
+adobe_reflectivity 0.04 
+adobe_bump_strength 0.0 
+d 1.0 
+
+map_d SteveModel_Glove_Opacity.png
+map_Kd SteveModel_Glove_Diffuse.png
+adobe_map_normal SteveModel_Glove_Normal.png
+map_Ks SteveModel_Glove_Specular.png
+adobe_map_shininess SteveModel_Glove_Gloss.png
+
+newmtl Body
+illum 4 
+Kd 1.00 1.00 1.00 
+Tf 1.00 1.00 1.00 
+Ni 1.00 
+Ks 1.00 1.00 1.00 
+Ns 512 
+adobe_reflectivity 0.04 
+adobe_bump_strength 0.0 
+d 1.0 
+
+map_d SteveModel_Body_Opacity.png
+map_Kd SteveModel_Body_Diffuse.png
+adobe_map_normal SteveModel_Body_Normal.png
+map_Ks SteveModel_Body_Specular.png
+adobe_map_shininess SteveModel_Body_Gloss.png
+

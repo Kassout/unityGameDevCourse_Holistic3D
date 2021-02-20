@@ -1,10 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
+using Quaternion = UnityEngine.Quaternion;
+using Random = UnityEngine.Random;
+using Vector3 = UnityEngine.Vector3;
 
 public class FPController : MonoBehaviour
 {
     public GameObject cam;
+    public GameObject stevePrefab;
+    public Slider healthBar;
+    public Text ammoReserves;
+    public Text ammoClipAmount;
     public Transform shotDirection;
     public Animator anim;
     public AudioSource[] footsteps;
@@ -33,25 +39,56 @@ public class FPController : MonoBehaviour
     float z;
 
     //Inventory
-    int ammo = 0;
+    int ammo = 50;
     int maxAmmo = 50;
-    int health = 0;
+    int health = 100;
     int maxHealth = 100;
-    int ammoClip = 0;
+    int ammoClip = 10;
     int ammoClipMax = 10;
 
     bool playingWalking = false;
     bool previouslyGrounded = true;
 
+    public void TakeHit(float amount)
+    {
+        health = (int) Mathf.Clamp(health - amount, 0, maxHealth);
+        healthBar.value = health;
+        if (health <= 0)
+        {
+            Vector3 pos = new Vector3(transform.position.x, Terrain.activeTerrain.SampleHeight(transform.position),
+                transform.position.z);
+            GameObject steve = Instantiate(stevePrefab, pos, transform.rotation);
+            steve.GetComponent<Animator>().SetTrigger("Death");
+            GameStats.gameOver = true;
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Home"))
+        {
+            Vector3 pos = new Vector3(transform.position.x, Terrain.activeTerrain.SampleHeight(transform.position),
+                transform.position.z);
+            GameObject steve = Instantiate(stevePrefab, pos, transform.rotation);
+            steve.GetComponent<Animator>().SetTrigger("Dance");
+            GameStats.gameOver = true;
+            Destroy(gameObject);
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        rb = this.GetComponent<Rigidbody>();
-        capsule = this.GetComponent<CapsuleCollider>();
+        rb = GetComponent<Rigidbody>();
+        capsule = GetComponent<CapsuleCollider>();
         cameraRot = cam.transform.localRotation;
-        characterRot = this.transform.localRotation;
+        characterRot = transform.localRotation;
 
         health = maxHealth;
+        healthBar.value = health;
+        ammoReserves.text = ammo.ToString();
+        ammoClipAmount.text = ammoClip.ToString();
     }
 
     void ProcessZombieHit()
@@ -80,16 +117,19 @@ public class FPController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.DrawRay(shotDirection.transform.position, shotDirection.forward * 200, Color.red);
         if (Input.GetKeyDown(KeyCode.F))
             anim.SetBool("arm", !anim.GetBool("arm"));
 
-        if (Input.GetMouseButtonDown(0) && !anim.GetBool("fire"))
+        if (Input.GetMouseButtonDown(0) && !anim.GetBool("fire") && GameStats.canShoot)
         {
             if (ammoClip > 0)
             {
                 anim.SetTrigger("fire");
                 ProcessZombieHit();
                 ammoClip--;
+                ammoClipAmount.text = ammoClip.ToString();
+                GameStats.canShoot = false;
             }
             else if (anim.GetBool("arm"))
                 triggerSound.Play();
@@ -106,8 +146,8 @@ public class FPController : MonoBehaviour
             int ammoAvailable = amountNeeded < ammo ? amountNeeded : ammo;
             ammo -= ammoAvailable;
             ammoClip += ammoAvailable;
-            Debug.Log("Ammo Left: " + ammo);
-            Debug.Log("Ammo in Clip: " + ammoClip);
+            ammoReserves.text = ammo.ToString();
+            ammoClipAmount.text = ammoClip.ToString();
         }
 
         if (Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0)
@@ -168,7 +208,7 @@ public class FPController : MonoBehaviour
 
         cameraRot = ClampRotationAroundXAxis(cameraRot);
 
-        this.transform.localRotation = characterRot;
+        transform.localRotation = characterRot;
         cam.transform.localRotation = cameraRot;
 
         x = Input.GetAxis("Horizontal") * speed;
@@ -209,7 +249,7 @@ public class FPController : MonoBehaviour
         if (col.gameObject.tag == "Ammo" && ammo < maxAmmo)
         {
             ammo = Mathf.Clamp(ammo + 10, 0, maxAmmo);
-            Debug.Log("Ammo: " + ammo);
+            ammoReserves.text = ammo.ToString();
             Destroy(col.gameObject);
             ammoPickup.Play();
 
@@ -217,14 +257,14 @@ public class FPController : MonoBehaviour
         else if (col.gameObject.tag == "MedKit" && health < maxHealth)
         {
             health = Mathf.Clamp(health + 25, 0, maxHealth);
-            Debug.Log("MedKit: " + health);
+            healthBar.value = health;
             Destroy(col.gameObject);
             healthPickup.Play();
         }
         else if (col.gameObject.tag == "Lava")
         {
             health = Mathf.Clamp(health - 50, 0, maxHealth);
-            Debug.Log("Health Level: " + health);
+            healthBar.value = health;
             if (health <= 0)
                 deathSound.Play();
         }

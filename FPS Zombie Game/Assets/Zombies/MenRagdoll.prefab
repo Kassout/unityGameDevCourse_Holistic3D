@@ -2604,9 +2604,10 @@ GameObject:
   m_Component:
   - component: {fileID: 6939226099272941387}
   - component: {fileID: 1064844707061617201}
+  - component: {fileID: 4506843220294796435}
   m_Layer: 0
   m_Name: MenRagdoll
-  m_TagString: Untagged
+  m_TagString: Ragdoll
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2646,6 +2647,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &4506843220294796435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6203229682823761240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05ec9aedb05cd854d9da8bf51437a14f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6314186371754549361
 GameObject:
   m_ObjectHideFlags: 0

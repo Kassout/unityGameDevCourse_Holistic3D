@@ -8,6 +8,8 @@ TagManager:
   - MedKit
   - Lava
   - Zombie
+  - Ragdoll
+  - Home
   layers:
   - Default
   - TransparentFX

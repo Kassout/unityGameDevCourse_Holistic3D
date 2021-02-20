@@ -4,8 +4,10 @@ using UnityEngine.AI;
 public class ZombieController : MonoBehaviour
 {
     public GameObject target;
+    public AudioSource[] splats;
     public float walkingSpeed;
     public float runningSpeed;
+    public float damageAmount = 5;
     public GameObject ragdoll;
 
     private NavMeshAgent agent;
@@ -39,6 +41,10 @@ public class ZombieController : MonoBehaviour
 
     float DistanceToPlayer()
     {
+        if (GameStats.gameOver)
+        {
+            return Mathf.Infinity;
+        }
         return Vector3.Distance(target.transform.position, transform.position);
     }
 
@@ -61,6 +67,17 @@ public class ZombieController : MonoBehaviour
 
         return false;
     }
+    
+    void PlaySplatAudio()
+    {
+        AudioSource audioSource = new AudioSource();
+        int n = Random.Range(1, splats.Length);
+
+        audioSource = splats[n];
+        audioSource.Play();
+        splats[n] = splats[0];
+        splats[0] = audioSource;
+    }
 
     public void KillZombie()
     {
@@ -69,10 +86,19 @@ public class ZombieController : MonoBehaviour
         state = STATE.DEAD;
     }
 
+    public void DamagePlayer()
+    {
+        if (target != null)
+        {
+            target.GetComponent<FPController>().TakeHit(damageAmount);
+            PlaySplatAudio();
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (target == null)
+        if (target == null && GameStats.gameOver == false)
         {
             target = GameObject.FindWithTag("Player");
             return;
@@ -118,6 +144,12 @@ public class ZombieController : MonoBehaviour
                 break;
             
             case STATE.CHASE:
+                if (GameStats.gameOver)
+                {
+                    TurnOffTriggers();
+                    state = STATE.WANDER;
+                    return;
+                }
                 agent.SetDestination(target.transform.position);
                 agent.stoppingDistance = 5;
                 TurnOffTriggers();
@@ -139,6 +171,12 @@ public class ZombieController : MonoBehaviour
                 break;
             
             case STATE.ATTACK:
+                if (GameStats.gameOver)
+                {
+                    TurnOffTriggers();
+                    state = STATE.WANDER;
+                    return;
+                }
                 TurnOffTriggers();
                 anim.SetBool("isAttacking", true);
                 transform.LookAt(target.transform.position);
@@ -149,6 +187,8 @@ public class ZombieController : MonoBehaviour
                 break;
             
             case STATE.DEAD:
+                Destroy(agent);
+                GetComponent<Sink>().StartSink();
                 break;
         }
     }
