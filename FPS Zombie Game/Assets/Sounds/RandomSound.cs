@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RandomSound : MonoBehaviour
 {
@@ -33,5 +31,4 @@ public class RandomSound : MonoBehaviour
         Invoke("PlaySound", Random.Range(randomMin, randomMax));
         Destroy(newSound, sound.clip.length);
     }
-
 }

@@ -2252,6 +2252,8 @@ MonoBehaviour:
   walkingSpeed: 1
   runningSpeed: 2
   damageAmount: 9
+  shotsRequired: 1
+  shotsTaken: 0
   ragdoll: {fileID: 1541204302593932504, guid: 29635fd7ba813430b8b90eaa03d24a65, type: 3}
 --- !u!195 &1694201101
 NavMeshAgent:

@@ -10,6 +10,10 @@ public class ZombieController : MonoBehaviour
     public float walkingSpeed;
     public float runningSpeed;
     public float damageAmount = 5;
+
+    public int shotsRequired = 1;
+    public int shotsTaken = 0;
+    
     public GameObject ragdoll;
     Animator anim;
     NavMeshAgent agent;

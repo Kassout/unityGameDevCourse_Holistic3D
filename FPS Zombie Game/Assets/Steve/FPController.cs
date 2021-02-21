@@ -25,7 +25,17 @@ public class FPController : MonoBehaviour
 
     public GameObject uiBloodPrefab;
     public GameObject canvas;
+    public GameObject gameOverPrefab;
 
+    public CompassController compassC;
+    public GameObject[] checkPoints;
+    int currentCheckPoint = 0;
+    public LayerMask checkPointLayer;
+    
+    public int lives = 3;
+    private int timesDied = 0;
+    private Vector3 startPosition;
+    
     float cWidth;
     float cHeight;
 
@@ -56,8 +66,12 @@ public class FPController : MonoBehaviour
     bool playingWalking = false;
     bool previouslyGrounded = true;
 
+    private GameObject steve;
+
     public void TakeHit(float amount)
     {
+        if (GameStats.gameOver) return;
+        
         health = (int) Mathf.Clamp(health - amount, 0, maxHealth);
         healthbar.value = health;
 
@@ -65,20 +79,44 @@ public class FPController : MonoBehaviour
         bloodSplatter.transform.SetParent(canvas.transform);
         bloodSplatter.transform.position = new Vector3(Random.Range(0, cWidth), Random.Range(0, cHeight), 0);
 
+        float bloodScale = Random.Range(0.3f, 1.5f);
+        bloodSplatter.transform.localScale = new Vector3(bloodScale, bloodScale, 1);
+
         Destroy(bloodSplatter, 2.2f);
 
         if (health <= 0)
         {
-            Vector3 pos = new Vector3(this.transform.position.x,
-                                        Terrain.activeTerrain.SampleHeight(this.transform.position),
-                                        this.transform.position.z);
-            GameObject steve = Instantiate(stevePrefab, pos, this.transform.rotation);
+            Vector3 pos = new Vector3(transform.position.x,
+                                        Terrain.activeTerrain.SampleHeight(transform.position),
+                                        transform.position.z);
+            steve = Instantiate(stevePrefab, pos, transform.rotation);
             steve.GetComponent<Animator>().SetTrigger("Death");
             GameStats.gameOver = true;
-            Destroy(this.gameObject);
+            steve.GetComponent<AudioSource>().enabled = false;
+            timesDied++;
 
+            if (timesDied == lives)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                steve.GetComponent<GoToMainMenu>().enabled = false;
+                cam.SetActive(false);
+                Invoke("Respawn", 5);
+            }
 
         }
+    }
+
+    void Respawn()
+    {
+        Destroy(steve);
+        cam.SetActive(true);
+        GameStats.gameOver = false;
+        health = maxHealth;
+        healthbar.value = health;
+        transform.position = startPosition;
     }
 
     void OnTriggerEnter(Collider col)
@@ -92,6 +130,19 @@ public class FPController : MonoBehaviour
             steve.GetComponent<Animator>().SetTrigger("Dance");
             GameStats.gameOver = true;
             Destroy(this.gameObject);
+            GameObject gameOverText = Instantiate(gameOverPrefab);
+            gameOverText.transform.SetParent(canvas.transform);
+            gameOverText.transform.localPosition = Vector3.zero;
+        }
+
+        if (col.gameObject.CompareTag("SpawnPoint"))
+        {
+            startPosition = transform.position;
+            if (col.gameObject == checkPoints[currentCheckPoint])
+            {
+                currentCheckPoint++;
+                compassC.target = checkPoints[currentCheckPoint];
+            }
         }
     }
 
@@ -112,12 +163,14 @@ public class FPController : MonoBehaviour
         cWidth = canvas.GetComponent<RectTransform>().rect.width;
         cHeight = canvas.GetComponent<RectTransform>().rect.height;
 
+        startPosition = transform.position;
+        compassC.target = checkPoints[0];
     }
 
     void ProcessZombieHit()
     {
         RaycastHit hitInfo;
-        if (Physics.Raycast(shotDirection.position, shotDirection.forward, out hitInfo, 200))
+        if (Physics.Raycast(shotDirection.position, shotDirection.forward, out hitInfo, 200, ~checkPointLayer))
         {
             GameObject hitZombie = hitInfo.collider.gameObject;
             if (hitZombie.tag == "Zombie")
@@ -126,16 +179,21 @@ public class FPController : MonoBehaviour
                 blood.transform.LookAt(this.transform.position);
                 Destroy(blood, 0.5f);
 
-                if (Random.Range(0, 10) < 5)
+                hitZombie.GetComponent<ZombieController>().shotsTaken++;
+                if (hitZombie.GetComponent<ZombieController>().shotsTaken ==
+                    hitZombie.GetComponent<ZombieController>().shotsRequired)
                 {
-                    GameObject rdPrefab = hitZombie.GetComponent<ZombieController>().ragdoll;
-                    GameObject newRD = Instantiate(rdPrefab, hitZombie.transform.position, hitZombie.transform.rotation);
-                    newRD.transform.Find("Hips").GetComponent<Rigidbody>().AddForce(shotDirection.forward * 10000);
-                    Destroy(hitZombie);
-                }
-                else
-                {
-                    hitZombie.GetComponent<ZombieController>().KillZombie();
+                    if (Random.Range(0, 10) < 5)
+                    {
+                        GameObject rdPrefab = hitZombie.GetComponent<ZombieController>().ragdoll;
+                        GameObject newRD = Instantiate(rdPrefab, hitZombie.transform.position, hitZombie.transform.rotation);
+                        newRD.transform.Find("Hips").GetComponent<Rigidbody>().AddForce(shotDirection.forward * 10000);
+                        Destroy(hitZombie);
+                    }
+                    else
+                    {
+                        hitZombie.GetComponent<ZombieController>().KillZombie();
+                    }   
                 }
             }
         }
@@ -145,10 +203,11 @@ public class FPController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateCursorLock();
+        
         Debug.DrawRay(shotDirection.transform.position, shotDirection.forward * 200, Color.red);
         if (Input.GetKeyDown(KeyCode.F))
             anim.SetBool("arm", !anim.GetBool("arm"));
-            
 
         if (Input.GetMouseButtonDown(0) && !anim.GetBool("fire") && anim.GetBool("arm") && GameStats.canShoot)
         {
