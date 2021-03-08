@@ -61,10 +61,10 @@ public class Radar : MonoBehaviour
             radarPos.z = distToObject * Mathf.Sin(deltay * Mathf.Deg2Rad);
 
 
-            ro.icon.transform.SetParent(this.transform);
-            RectTransform rt = this.GetComponent<RectTransform>();
+            ro.icon.transform.SetParent(transform);
+            RectTransform rt = GetComponent<RectTransform>();
             ro.icon.transform.position = new Vector3(radarPos.x + rt.pivot.x, radarPos.z + rt.pivot.y, 0) 
-                       + this.transform.position;
+                       + transform.position;
         }
     }
 }

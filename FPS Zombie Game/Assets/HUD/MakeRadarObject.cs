@@ -10,7 +10,7 @@ public class MakeRadarObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Radar.RegisterRadarObject(this.gameObject, image);
+        Radar.RegisterRadarObject(gameObject, image);
     }
 
     // Update is called once per frame
@@ -21,6 +21,6 @@ public class MakeRadarObject : MonoBehaviour
 
     void OnDestroy()
     {
-        Radar.RemoveRadarObject(this.gameObject);
+        Radar.RemoveRadarObject(gameObject);
     }
 }

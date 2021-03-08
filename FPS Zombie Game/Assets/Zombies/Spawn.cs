@@ -10,6 +10,8 @@ public class Spawn : MonoBehaviour
     public float spawnRadius;
     public bool SpawnOnStart = true;
 
+    private bool hasSpawn = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,7 @@ public class Spawn : MonoBehaviour
     {
         for (int i = 0; i < number; i++)
         {
-            Vector3 randomPoint = this.transform.position + Random.insideUnitSphere * spawnRadius;
+            Vector3 randomPoint = transform.position + Random.insideUnitSphere * spawnRadius;
 
             NavMeshHit hit;
             if (NavMesh.SamplePosition(randomPoint, out hit, 10.0f, NavMesh.AllAreas))
@@ -35,8 +37,11 @@ public class Spawn : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        if (!SpawnOnStart && collider.gameObject.tag == "Player")
+        if (!SpawnOnStart && collider.gameObject.tag == "Player" && !hasSpawn)
+        {
             SpawnAll();
+            hasSpawn = true;
+        }
     }
 
 }

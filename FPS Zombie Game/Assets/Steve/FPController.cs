@@ -123,13 +123,13 @@ public class FPController : MonoBehaviour
     {
         if (col.gameObject.tag == "Home")
         {
-            Vector3 pos = new Vector3(this.transform.position.x,
-                                        Terrain.activeTerrain.SampleHeight(this.transform.position),
-                                        this.transform.position.z);
-            GameObject steve = Instantiate(stevePrefab, pos, this.transform.rotation);
+            Vector3 pos = new Vector3(transform.position.x,
+                                        Terrain.activeTerrain.SampleHeight(transform.position),
+                                        transform.position.z);
+            GameObject steve = Instantiate(stevePrefab, pos, transform.rotation);
             steve.GetComponent<Animator>().SetTrigger("Dance");
             GameStats.gameOver = true;
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             GameObject gameOverText = Instantiate(gameOverPrefab);
             gameOverText.transform.SetParent(canvas.transform);
             gameOverText.transform.localPosition = Vector3.zero;
@@ -149,10 +149,10 @@ public class FPController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = this.GetComponent<Rigidbody>();
-        capsule = this.GetComponent<CapsuleCollider>();
+        rb = GetComponent<Rigidbody>();
+        capsule = GetComponent<CapsuleCollider>();
         cameraRot = cam.transform.localRotation;
-        characterRot = this.transform.localRotation;
+        characterRot = transform.localRotation;
 
         health = maxHealth;
         healthbar.value = health;
@@ -176,7 +176,7 @@ public class FPController : MonoBehaviour
             if (hitZombie.tag == "Zombie")
             {
                 GameObject blood = Instantiate(bloodPrefab, hitInfo.point, Quaternion.identity);
-                blood.transform.LookAt(this.transform.position);
+                blood.transform.LookAt(transform.position);
                 Destroy(blood, 0.5f);
 
                 hitZombie.GetComponent<ZombieController>().shotsTaken++;
@@ -298,7 +298,7 @@ public class FPController : MonoBehaviour
 
         cameraRot = ClampRotationAroundXAxis(cameraRot);
 
-        this.transform.localRotation = characterRot;
+        transform.localRotation = characterRot;
         cam.transform.localRotation = cameraRot;
 
         x = Input.GetAxis("Horizontal") * speed;
@@ -338,7 +338,7 @@ public class FPController : MonoBehaviour
     {
         if (col.gameObject.tag == "Ammo" && ammo < maxAmmo)
         {
-            ammo = Mathf.Clamp(ammo + 10, 0, maxAmmo);
+            ammo = Mathf.Clamp(ammo + 25, 0, maxAmmo);
             ammoReserves.text = ammo + "";
             //Debug.Log("Ammo: " + ammo);
             Destroy(col.gameObject);

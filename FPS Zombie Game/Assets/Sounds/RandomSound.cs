@@ -23,7 +23,7 @@ public class RandomSound : MonoBehaviour
         {
             newAS.spatialBlend = 1;
             newAS.maxDistance = sound.maxDistance;
-            newSound.transform.SetParent(this.transform);
+            newSound.transform.SetParent(transform);
             newSound.transform.localPosition = Vector3.zero;
         }
         newAS.Play();

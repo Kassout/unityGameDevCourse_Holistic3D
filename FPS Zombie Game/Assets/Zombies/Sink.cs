@@ -10,14 +10,14 @@ public class Sink : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(this.gameObject.tag == "Ragdoll")
+        if(gameObject.tag == "Ragdoll")
             Invoke("StartSink", 5);
     }
 
     public void StartSink()
     {
-        destroyHeight = Terrain.activeTerrain.SampleHeight(this.transform.position) - 5;
-        Collider[] colList = this.transform.GetComponentsInChildren<Collider>();
+        destroyHeight = Terrain.activeTerrain.SampleHeight(transform.position) - 5;
+        Collider[] colList = transform.GetComponentsInChildren<Collider>();
         foreach (Collider c in colList)
         {
             Destroy(c);
@@ -28,10 +28,10 @@ public class Sink : MonoBehaviour
 
     void SinkIntoGround()
     {
-        this.transform.Translate(0, -0.001f, 0);
-        if (this.transform.position.y < destroyHeight)
+        transform.Translate(0, -0.001f, 0);
+        if (transform.position.y < destroyHeight)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 }
